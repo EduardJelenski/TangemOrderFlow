@@ -35,7 +35,7 @@ struct DelAdr: View {
         .background(.lightGray)
         .safeAreaInset(edge: .bottom) {
             NavigationLink("Continue") {
-                PaymentOptionView()
+//                PaymentOptionView(viewModel: PaymentOptionViewModelImpl())
             }
             .dsButton()
             .padding()

@@ -7,45 +7,62 @@
 
 import SwiftUI
 
-struct DeliveryAddressView: View {
+protocol DeliveryAddressViewModel: ObservableObject {
+    var address: String { get set }
+}
+
+final class DeliveryAddressViewModelImpl: DeliveryAddressViewModel {
+    @Published var address = ""
+}
+
+struct DeliveryAddressView<ViewModel: DeliveryAddressViewModel>: View {
     
-    @State var address = ""
-    @FocusState var focused: Bool
+    @StateObject var viewModel: ViewModel
+    @FocusState var isFocused: Bool
     
     var body: some View {
-        List {
-            Section {
-                Text("Delivery address")
-                    .bold()
-                
-                TextField(
-                    "Delivery address text field",
-                    text: $address,
-                    prompt: Text("Switzerland, Zug, 12 Bitcoin St., Tangem LLC.")
-                )
-                .focused($focused)
-            }
-            .listRowSeparator(.hidden)
-            
+        ScrollView {
+            addressSection
+                .padding(.top)
         }
         .onTapGesture {
-            focused = false
+            isFocused = false
         }
         .background(.lightGray)
         .safeAreaInset(edge: .bottom) {
-            NavigationLink("Continue") {
-                PaymentOptionView()
-            }
-            .dsButton()
-            .padding()
+            bottomButton
         }
         .navigationBarHidden(true)
+    }
+    
+    private var bottomButton: some View {
+        NavigationLink {
+            PaymentOptionView(viewModel: PaymentOptionViewModelImpl())
+        } label: {
+            Text("Continue")
+                .dsButton()
+                .padding(.horizontal)
+        }
+    }
+    
+    private var addressSection: some View {
+        CustomSection {
+            TitledContent("Delivery address") {
+                TextField(
+                    "Delivery Address",
+                    text: $viewModel.address,
+                    prompt: Text("Switzerland, Zug, 12 Bitcoin St., Tangem LLC.")
+                )
+                .focused($isFocused)
+            }
+        }
+        .padding(.horizontal)
     }
 }
 
 #Preview {
     NavigationStack {
-        DeliveryAddressView()
+        DeliveryAddressView(viewModel: DeliveryAddressViewModelImpl())
     }
 }
 
@@ -70,22 +87,20 @@ extension View {
     }
 }
 
-struct Card<Content: View>: View {
+struct TitledContent<Content: View>: View {
     
+    let title: String
     let content: Content
     
-    init(@ViewBuilder content: () -> Content) {
+    init(_ title: String, @ViewBuilder content: () -> Content) {
         self.content = content()
+        self.title = title
     }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            content
-        }
-        .padding()
-        .background(.white)
-        .cornerRadius(10)
+        Text(title)
+            .bold()
+        
+        content
     }
 }
-
-

@@ -17,24 +17,6 @@ struct MyView: View {
     }
 }
 
-struct CustomSection<Content: View>: View {
-    let content: Content
-    
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-    
-    var body: some View {
-        VStack {
-            content
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding()
-        .background(.white)
-        .cornerRadius(8)
-    }
-}
-
 struct OrderSummaryView: View {
     
     @Namespace var ns
@@ -58,7 +40,7 @@ struct OrderSummaryView: View {
         }
         .safeAreaInset(edge: .bottom) {
             NavigationLink("Complete order") {
-                PaymentOptionView()
+//                PaymentOptionView(viewModel: PaymentOptionViewModelImpl())
             }
             .dsButton()
             .padding()

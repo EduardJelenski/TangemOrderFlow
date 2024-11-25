@@ -1,0 +1,45 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Address data entered on first screen" : {
+
+    },
+    "Complete order" : {
+
+    },
+    "Continue" : {
+
+    },
+    "Delivery address" : {
+
+    },
+    "Delivery Address" : {
+
+    },
+    "Delivery address text field" : {
+
+    },
+    "Hello Developer" : {
+
+    },
+    "Hello, world!" : {
+
+    },
+    "Installment Period" : {
+
+    },
+    "Order summary" : {
+
+    },
+    "Payment Way" : {
+
+    },
+    "Selected payment method" : {
+
+    },
+    "Switzerland, Zug, 12 Bitcoin St., Tangem LLC." : {
+
+    }
+  },
+  "version" : "1.0"
+}

@@ -7,58 +7,76 @@
 
 import SwiftUI
 
-let options = ["PayPal", "Card", "Installment"]
-let installments = [3, 6, 9].map { "\($0) months" }
-
-extension String: @retroactive Identifiable {
-    public var id: String { self }
+enum InstallmentAvailability {
+    case available(periods: [String])
+    case unavailable
 }
 
-struct PaymentOptionView: View {
+protocol PaymentOptionViewModel: ObservableObject {
+    var options: [String] { get }
+    var installments: InstallmentAvailability { get }
     
-    @State var paymentOption: String? = options[2]
-    @State var installmentOption: String? = options[0]
+    var selectedOption: String? { get set }
+    var selectedInstallment: String? { get set }
+}
+
+import Combine
+
+final class PaymentOptionViewModelImpl: PaymentOptionViewModel {
     
-//    @State private var selection: Reaction? = .none
+    enum Constants {
+        static let installmentOption = "Installment"
+        static let installments = [3, 6, 9].map { "\($0) months" }
+    }
+
+    let options = ["Cash", "Card", Constants.installmentOption]
+    @Published var installments: InstallmentAvailability = .unavailable
+    
+    @Published var selectedOption: String?
+    @Published var selectedInstallment: String?
+    
+    init() {
+        $selectedOption
+            .map { option in
+                option == Constants.installmentOption ? .available(periods: Constants.installments) : .unavailable
+            }
+            .assign(to: &$installments)
+    }
+}
+
+struct PaymentOptionView<ViewModel: PaymentOptionViewModel>: View {
+    
+    @StateObject var viewModel: ViewModel
     
     var body: some View {
-            
         List {
             Section {
-                Text("Payment Way")
-                    .bold()
-                    .listRowSeparator(.hidden)
-                
-                    Picker("Hello", selection: $paymentOption) {
-                        ForEach(options) {
-                            Text($0).tag(Optional($0))
-                        }
+                Picker(selection: $viewModel.selectedOption.animation()) {
+                    ForEach(viewModel.options, id: \.self) {
+                        Text($0).tag(Optional($0))
                     }
-                    .pickerStyle(.inline)
-            }
-            
-            
-            if paymentOption == "Installment" {
-                Section {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Installment type")
-                            .bold()
-                    }
-                    .listRowSeparator(.hidden)
-                    
-                    
-                    Picker("", selection: $installmentOption) {
-                        ForEach(installments) {
-                            Text($0).tag(Optional($0))
-                        }
-                    }
-                    .pickerStyle(.inline)
+                } label: {
+                    Text("Payment Way")
+                        .bold()
+                        .listRowSeparator(.hidden)
                 }
             }
             
+            if case .available(let periods) = viewModel.installments {
+                Section {
+                    Picker(selection: $viewModel.selectedInstallment) {
+                        ForEach(periods, id: \.self) {
+                            Text($0).tag(Optional($0))
+                        }
+                    } label: {
+                        Text("Installment Period")
+                            .bold()
+                            .listRowSeparator(.hidden)
+                    }
+                }
+            }
         }
-        .labelsHidden()
-        .animation(.default, value: paymentOption == "Installment")
+        .pickerStyle(.inline)
         .safeAreaInset(edge: .bottom) {
             NavigationLink("Continue") {
                 OrderSummaryView()
@@ -71,7 +89,7 @@ struct PaymentOptionView: View {
 }
 
 #Preview {
-    
-    PaymentOptionView()
+    NavigationStack {
+        PaymentOptionView(viewModel: PaymentOptionViewModelImpl())
+    }
 }
-

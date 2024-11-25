@@ -12,7 +12,7 @@ struct TestTaskTangemApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                DeliveryAddressView()
+                DeliveryAddressView(viewModel: DeliveryAddressViewModelImpl())
 //                AnimatedExampleView()
             }
         }
