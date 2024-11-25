@@ -7,139 +7,119 @@
 
 import SwiftUI
 
-struct MyView: View {
-    var body: some View {
-        Section {
-            Text("Delivery address")
-                .bold()
-            Text("Address data entered on first screen")
-        }
-    }
+final class OrderSummaryViewModelImpl: ObservableObject {
+    @Published var address = "Pushkinskaya"
+    
+    @Published var paymentWay = "MIRCARD"
+}
+
+enum SummaryTransition {
+    case deliveryAddress
+    case paymentWay
 }
 
 struct OrderSummaryView: View {
     
-    @Namespace var ns
+    @StateObject var viewModel = OrderSummaryViewModelImpl()
     
-    @State var isSmall = false
-    @State var isAnotherSmall = false
+    @Namespace var namespace
+    
+    @FocusState var editedField: SummaryTransition?
+    
+    @State var transition: SummaryTransition?// = .deliveryAddress
     
     var body: some View {
-        Group {
-            if isSmall {
-                small
-                    .padding(.horizontal)
-                    .transition(.no)
-            } else if isAnotherSmall {
-                another
-                    .padding(.horizontal)
-            } else {
-                large
-                    .transition(.no)
+        ScrollView {
+            Group {
+                switch transition {
+                case nil:
+                    mainView
+                case .deliveryAddress:
+                    deliveryAddress
+                case .paymentWay:
+                    paymentWay
+                }
+            }
+            .padding(.horizontal)
+        }
+        .onTapGesture {
+            withAnimation {
+                transition = nil
+                editedField = nil
             }
         }
+        .background(.lightGray)
         .safeAreaInset(edge: .bottom) {
-            NavigationLink("Complete order") {
-//                PaymentOptionView(viewModel: PaymentOptionViewModelImpl())
+            Button("Complete order") {
+                
             }
             .dsButton()
             .padding()
         }
-        
         .navigationBarHidden(true)
     }
     
     @ViewBuilder
-    var another: some View {
+    var mainView: some View {
+        Text("Order summary")
+            .font(.largeTitle)
+            .bold()
+            .padding(.vertical)
         CustomSection {
-            Text("Payment Way")
-                .bold()
-                .matchedGeometryEffect(id: "2t", in: ns)
-            TextField(
-                "Selected payment method",
-                text: .constant("Selected payment method"),
-                prompt: Text("Switzerland, Zug, 12 Bitcoin St., Tangem LLC.")
-            )
-            .textFieldStyle(.roundedBorder)
-            .matchedGeometryEffect(id: "2s", in: ns)
+            TitledContent("Delivery address") {
+                Text(viewModel.address)
+            }
         }
+        .matchedGeometryEffect(id: "section", in: namespace)
         .onTapGesture {
             withAnimation {
-                isAnotherSmall.toggle()
+                transition = .deliveryAddress
+                editedField = .deliveryAddress
             }
         }
-        .matchedGeometryEffect(id: "section1", in: ns)
-        .transition(.no)
-        .listRowSeparator(.hidden)
-    }
-    
-    @ViewBuilder
-    var small: some View {
+        
         CustomSection {
-            Text("Delivery address")
-                .bold()
-                .matchedGeometryEffect(id: "1t", in: ns)
-            TextField(
-                "Delivery address text field",
-                text: .constant("Address data entered on first screen"),
-                prompt: Text("Switzerland, Zug, 12 Bitcoin St., Tangem LLC.")
-            )
-            .textFieldStyle(.roundedBorder)
-            .matchedGeometryEffect(id: "1s", in: ns)
+            TitledContent("Payment Way") {
+                Text(viewModel.paymentWay)
+            }
         }
+        .matchedGeometryEffect(id: "section1", in: namespace)
         .onTapGesture {
             withAnimation {
-                isSmall.toggle()
+                transition = .paymentWay
+                editedField = .paymentWay
             }
         }
-        .matchedGeometryEffect(id: "section", in: ns)
-        .transition(.no)
-        .listRowSeparator(.hidden)
     }
     
-    @ViewBuilder
-    var large: some View {
-        ScrollView {
-            Text("Order summary")
-                .font(.largeTitle)
-                .bold()
-                .padding(.vertical)
-            CustomSection {
-                Text("Delivery address")
-                    .bold()
-                    .matchedGeometryEffect(id: "1t", in: ns)
-                Text("Address data entered on first screen")
-                    .matchedGeometryEffect(id: "1s", in: ns)
+    var deliveryAddress: some View {
+        CustomSection {
+            TitledContent("Delivery address") {
+                TextField(
+                    "Delivery Address",
+                    text: $viewModel.address,
+                    prompt: Text("Switzerland, Zug, 12 Bitcoin St., Tangem LLC.")
+                )
+                .focused($editedField, equals: .deliveryAddress)
             }
-            .matchedGeometryEffect(id: "section", in: ns)
-            .onTapGesture {
-                withAnimation {
-                    isSmall = true
-                }
-            }
-            .listRowSeparator(.hidden)
-            .padding(.horizontal)
-            
-            CustomSection {
-                Text("Payment Way")
-                    .bold()
-                    .matchedGeometryEffect(id: "2t", in: ns)
-                Text("Selected payment method")
-                    .matchedGeometryEffect(id: "2s", in: ns)
-            }
-            .matchedGeometryEffect(id: "section1", in: ns)
-            .onTapGesture {
-                withAnimation {
-                    isAnotherSmall = true
-                }
-            }
-            .listRowSeparator(.hidden)
-            .padding(.horizontal)
         }
-        .background {
-            Color.lightGray.ignoresSafeArea()//.matchedGeometryEffect(id: "bg", in: ns)
-        }
+        .matchedGeometryEffect(id: "section", in: namespace)
     }
+    
+    var paymentWay: some View {
+        CustomSection {
+            TitledContent("Payment Way") {
+                TextField(
+                    "Selected payment method",
+                    text: .constant("Selected payment method"),
+                    prompt: Text("Switzerland, Zug, 12 Bitcoin St., Tangem LLC.")
+                )
+                .focused($editedField, equals: .paymentWay)
+            }
+        }
+        .matchedGeometryEffect(id: "section1", in: namespace)
+    }
+    
 }
 
 #Preview {
