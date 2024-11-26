@@ -1,5 +1,5 @@
 //
-//  CustomSection.swift
+//  DSCustomSection.swift
 //  TestTaskTangem
 //
 //  Created by eelenskiy on 25.11.2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomSection<Content: View>: View {
+struct DSCustomSection<Content: View>: View {
     let content: Content
     
     init(@ViewBuilder content: () -> Content) {
