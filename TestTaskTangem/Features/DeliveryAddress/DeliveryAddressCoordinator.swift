@@ -6,5 +6,5 @@
 //
 
 protocol DeliveryAddressCoordinator {
-    func paymentOption(outputting address: String)
+    func paymentMethod(outputting address: String)
 }

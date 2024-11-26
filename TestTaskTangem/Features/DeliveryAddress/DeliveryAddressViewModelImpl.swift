@@ -9,16 +9,32 @@ import Combine
 
 final class DeliveryAddressViewModelImpl: DeliveryAddressViewModel {
     
-    private let coordinator: DeliveryAddressCoordinator
-    
     @Published var address = ""
+    @Published private(set) var isErrored = false
+    
+    private let coordinator: DeliveryAddressCoordinator
     
     init(coordinator: DeliveryAddressCoordinator) {
         self.coordinator = coordinator
+        subscribeOnAddress()
     }
     
     func didTapContinue() {
-        // TODO: Validate address
-        coordinator.paymentOption(outputting: address)
+        if validateAddress() {
+            coordinator.paymentMethod(outputting: address)
+        } else {
+            isErrored = true
+        }
+    }
+    
+    private func subscribeOnAddress() {
+        $address
+            .map { _ in false }
+            .assign(to: &$isErrored)
+    }
+    
+    private func validateAddress() -> Bool {
+        // addressValidationUseCase.validateAddress(...)
+        !address.isEmpty
     }
 }

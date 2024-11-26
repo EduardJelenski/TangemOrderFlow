@@ -18,9 +18,7 @@ struct DSTitledContent<Content: View>: View {
     }
     
     var body: some View {
-        Text(title)
-            .bold()
-        
+        DSTitle(title)
         content
     }
 }

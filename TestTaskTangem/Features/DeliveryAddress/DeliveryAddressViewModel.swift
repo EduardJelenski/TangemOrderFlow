@@ -9,6 +9,7 @@ import Combine
 
 protocol DeliveryAddressViewModel: ObservableObject {
     var address: String { get set }
+    var isErrored: Bool { get }
     
     func didTapContinue()
 }

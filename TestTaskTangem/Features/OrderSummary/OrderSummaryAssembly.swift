@@ -16,6 +16,7 @@ final class OrderSummaryAssembly {
     func assemble(coordinator: OrderSummaryCoordinator, input: OrderSummaryAssemblyInput) -> some View {
         let viewModel = OrderSummaryViewModelImpl(
             coordinator: coordinator,
+            useCase: PaymentMethodUseCaseImpl(),
             deliveryAddress: input.deliveryAddress,
             paymentMethod: input.paymentMethod
         )
