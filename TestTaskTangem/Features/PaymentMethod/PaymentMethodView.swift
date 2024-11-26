@@ -1,5 +1,5 @@
 //
-//  PaymentOptionView.swift
+//  PaymentMethodView.swift
 //  TestTaskTangem
 //
 //  Created by eelenskiy on 23.11.2024.
@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct PaymentOptionView<ViewModel: PaymentOptionViewModel>: View {
+struct PaymentMethodView<ViewModel: PaymentMethodViewModel>: View {
     
     @StateObject var viewModel: ViewModel
     
     var body: some View {
         List {
             Section {
-                Picker(selection: $viewModel.selectedOption.animation()) {
-                    ForEach(viewModel.options, id: \.self) {
+                Picker(selection: $viewModel.selectedMethod.animation()) {
+                    ForEach(viewModel.methods, id: \.self) {
                         Text($0).tag(Optional($0))
                     }
                 } label: {
@@ -46,16 +46,16 @@ struct PaymentOptionView<ViewModel: PaymentOptionViewModel>: View {
 
 #Preview {
     NavigationStack {
-        PaymentOptionView(viewModel: MockViewModel())
+        PaymentMethodView(viewModel: MockViewModel())
     }
 }
 
-private final class MockViewModel: PaymentOptionViewModel {
-    var options: [String] = ["Cash", "Card", "Installments"]
+private final class MockViewModel: PaymentMethodViewModel {
+    var methods: [String] = ["Cash", "Card", "Installments"]
     
     var installments: InstallmentAvailability = .unavailable
     
-    var selectedOption: String?
+    var selectedMethod: String?
     
     var selectedInstallment: String?
     

@@ -23,7 +23,7 @@ final class DeliveryAddressViewModelImpl: DeliveryAddressViewModel {
     
     func didTapContinue() {
         if validateAddress() {
-            coordinator.paymentOption(outputting: address)
+            coordinator.paymentMethod(outputting: address)
         } else {
             isErrored = true
         }

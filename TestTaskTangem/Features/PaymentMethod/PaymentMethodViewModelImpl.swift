@@ -1,5 +1,5 @@
 //
-//  PaymentOptionViewModelImpl.swift
+//  PaymentMethodViewModelImpl.swift
 //  TestTaskTangem
 //
 //  Created by eelenskiy on 26.11.2024.
@@ -7,31 +7,31 @@
 
 import Combine
 
-final class PaymentOptionViewModelImpl: PaymentOptionViewModel {
+final class PaymentMethodViewModelImpl: PaymentMethodViewModel {
     enum Constants {
         static let installmentOption = "Installment"
         static let installments = [3, 6, 9].map { "\($0) months" }
     }
 
-    let options = ["Cash", "Card", Constants.installmentOption]
+    let methods = ["Cash", "Card", Constants.installmentOption]
     @Published var installments: InstallmentAvailability = .unavailable
     
-    @Published var selectedOption: String?
+    @Published var selectedMethod: String?
     @Published var selectedInstallment: String?
     
-    private let coordinator: PaymentOptionCoordinator
+    private let coordinator: PaymentMethodCoordinator
     
-    init(coordinator: PaymentOptionCoordinator) {
+    init(coordinator: PaymentMethodCoordinator) {
         self.coordinator = coordinator
         subscribeOnSelectedOption()
     }
     
     func didTapBottomButton() {
-        if let selectedOption {
+        if let selectedMethod {
             if let selectedInstallment {
                 coordinator.orderSummary(outputting: .installment(period: selectedInstallment))
             } else {
-                coordinator.orderSummary(outputting: .oneTime(name: selectedOption))
+                coordinator.orderSummary(outputting: .oneTime(name: selectedMethod))
             }
         } else {
             // TODO: display error state
@@ -40,9 +40,9 @@ final class PaymentOptionViewModelImpl: PaymentOptionViewModel {
     }
     
     private func subscribeOnSelectedOption() {
-        $selectedOption
-            .map { option in
-                option == Constants.installmentOption ? .available(periods: Constants.installments) : .unavailable
+        $selectedMethod
+            .map { method in
+                method == Constants.installmentOption ? .available(periods: Constants.installments) : .unavailable
             }
             .assign(to: &$installments)
     }

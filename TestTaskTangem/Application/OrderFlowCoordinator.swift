@@ -9,7 +9,7 @@ import SwiftUI
 
 enum OrderFlowRoute: Hashable {
     case deliveryAddress
-    case paymentOption
+    case paymentMethod
     case orderSummary
 }
 
@@ -28,7 +28,7 @@ final class OrderFlowCoordinator: ObservableObject {
     @Published var path = NavigationPath()
     
     private let orderSummaryAssembly = OrderSummaryAssembly()
-    private let paymentOptionAssembly = PaymentOptionAssembly()
+    private let paymentMethodAssembly = PaymentMethodAssembly()
     private let deliveryAddressAssembly = DeliveryAddressAssembly()
     
     private var flowStorage = OrderFlowStorage()
@@ -38,8 +38,8 @@ final class OrderFlowCoordinator: ObservableObject {
         switch route {
         case .deliveryAddress:
             deliveryAddressAssembly.assemble(coordinator: self)
-        case .paymentOption:
-            paymentOptionAssembly.assemble(coordinator: self)
+        case .paymentMethod:
+            paymentMethodAssembly.assemble(coordinator: self)
         case .orderSummary:
             buildOrderSummary()
         }
@@ -64,13 +64,13 @@ final class OrderFlowCoordinator: ObservableObject {
 }
 
 extension OrderFlowCoordinator: DeliveryAddressCoordinator {
-    func paymentOption(outputting address: String) {
+    func paymentMethod(outputting address: String) {
         flowStorage.deliveryAddress = address
-        path.append(OrderFlowRoute.paymentOption)
+        path.append(OrderFlowRoute.paymentMethod)
     }
 }
 
-extension OrderFlowCoordinator: PaymentOptionCoordinator {
+extension OrderFlowCoordinator: PaymentMethodCoordinator {
     func orderSummary(outputting paymentMethod: PaymentMethod) {
         flowStorage.paymentMethod = paymentMethod
         path.append(OrderFlowRoute.orderSummary)

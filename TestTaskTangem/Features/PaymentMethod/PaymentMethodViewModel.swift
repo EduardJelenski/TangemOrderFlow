@@ -1,5 +1,5 @@
 //
-//  PaymentOptionViewModel.swift
+//  PaymentMethodViewModel.swift
 //  TestTaskTangem
 //
 //  Created by eelenskiy on 26.11.2024.
@@ -12,11 +12,11 @@ enum InstallmentAvailability: Hashable {
     case unavailable
 }
 
-protocol PaymentOptionViewModel: ObservableObject {
-    var options: [String] { get }
+protocol PaymentMethodViewModel: ObservableObject {
+    var methods: [String] { get }
     var installments: InstallmentAvailability { get }
     
-    var selectedOption: String? { get set }
+    var selectedMethod: String? { get set }
     var selectedInstallment: String? { get set }
     
     func didTapBottomButton()

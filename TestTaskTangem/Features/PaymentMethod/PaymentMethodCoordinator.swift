@@ -1,10 +1,10 @@
 //
-//  PaymentOptionCoordinator.swift
+//  PaymentMethodCoordinator.swift
 //  TestTaskTangem
 //
 //  Created by eelenskiy on 26.11.2024.
 //
 
-protocol PaymentOptionCoordinator {
+protocol PaymentMethodCoordinator {
     func orderSummary(outputting paymentMethod: PaymentMethod)
 }
