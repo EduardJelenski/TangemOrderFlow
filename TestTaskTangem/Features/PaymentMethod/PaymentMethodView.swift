@@ -23,7 +23,7 @@ struct PaymentMethodView<ViewModel: PaymentMethodViewModel>: View {
                         .listRowSeparator(.hidden)
                 }
             }
-            if case .available(let periods) = viewModel.installments {
+            if let periods = viewModel.installmentPeriods {
                 Section {
                     Picker(selection: $viewModel.selectedInstallment) {
                         ForEach(periods, id: \.self) {
@@ -53,7 +53,7 @@ struct PaymentMethodView<ViewModel: PaymentMethodViewModel>: View {
 private final class MockViewModel: PaymentMethodViewModel {
     var methods: [String] = ["Cash", "Card", "Installments"]
     
-    var installments: InstallmentAvailability = .unavailable
+    var installmentPeriods: [String]? = nil
     
     var selectedMethod: String?
     

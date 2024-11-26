@@ -9,21 +9,23 @@ import Combine
 
 final class PaymentMethodViewModelImpl: PaymentMethodViewModel {
     enum Constants {
-        static let installmentOption = "Installment"
-        static let installments = [3, 6, 9].map { "\($0) months" }
+        static let installmentMethod = "Installment"
     }
 
-    let methods = ["Cash", "Card", Constants.installmentOption]
-    @Published var installments: InstallmentAvailability = .unavailable
+    let methods: [String]
+    @Published var installmentPeriods: [String]? = nil
     
     @Published var selectedMethod: String?
     @Published var selectedInstallment: String?
     
+    private let useCase: PaymentMethodUseCase
     private let coordinator: PaymentMethodCoordinator
     
-    init(coordinator: PaymentMethodCoordinator) {
+    init(coordinator: PaymentMethodCoordinator, useCase: PaymentMethodUseCase) {
         self.coordinator = coordinator
-        subscribeOnSelectedOption()
+        self.useCase = useCase
+        methods = useCase.paymentMethods()
+        subscribeOnSelectedMethod()
     }
     
     func didTapBottomButton() {
@@ -39,11 +41,11 @@ final class PaymentMethodViewModelImpl: PaymentMethodViewModel {
         
     }
     
-    private func subscribeOnSelectedOption() {
+    private func subscribeOnSelectedMethod() {
         $selectedMethod
-            .map { method in
-                method == Constants.installmentOption ? .available(periods: Constants.installments) : .unavailable
+            .map { method in // CHECK RETAIN
+                method == Constants.installmentMethod ? self.useCase.installmentPeriods() : nil
             }
-            .assign(to: &$installments)
+            .assign(to: &$installmentPeriods)
     }
 }

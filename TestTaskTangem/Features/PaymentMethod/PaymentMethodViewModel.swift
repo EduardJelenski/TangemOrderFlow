@@ -7,14 +7,9 @@
 
 import Combine
 
-enum InstallmentAvailability: Hashable {
-    case available(periods: [String])
-    case unavailable
-}
-
 protocol PaymentMethodViewModel: ObservableObject {
     var methods: [String] { get }
-    var installments: InstallmentAvailability { get }
+    var installmentPeriods: [String]? { get }
     
     var selectedMethod: String? { get set }
     var selectedInstallment: String? { get set }

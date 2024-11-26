@@ -13,11 +13,6 @@ enum OrderFlowRoute: Hashable {
     case orderSummary
 }
 
-enum PaymentMethod {
-    case oneTime(name: String)
-    case installment(period: String)
-}
-
 final class OrderFlowCoordinator: ObservableObject {
     
     private struct OrderFlowStorage {

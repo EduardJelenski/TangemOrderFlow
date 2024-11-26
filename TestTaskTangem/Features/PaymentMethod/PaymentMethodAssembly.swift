@@ -10,6 +10,11 @@ import SwiftUI
 final class PaymentMethodAssembly {
     
     func assemble(coordinator: PaymentMethodCoordinator) -> some View {
-        PaymentMethodView(viewModel: PaymentMethodViewModelImpl(coordinator: coordinator))
+        PaymentMethodView(
+            viewModel: PaymentMethodViewModelImpl(
+                coordinator: coordinator,
+                useCase: PaymentMethodUseCaseImpl()
+            )
+        )
     }
 }
