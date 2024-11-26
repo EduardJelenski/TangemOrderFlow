@@ -7,22 +7,23 @@
 
 import SwiftUI
 
-
-
-enum SummaryTransition {
+private enum SummaryTransition {
     case deliveryAddress
     case paymentWay
 }
 
-struct OrderSummaryView: View {
+private enum AnimationID {
+    static let deliveryAddress = "deliveryAddress"
+    static let paymentWay = "paymentWay"
+}
+
+struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
     
-    @StateObject var viewModel = OrderSummaryViewModelImpl()
+    @StateObject var viewModel: ViewModel
     
-    @Namespace var namespace
-    
-    @FocusState var editedField: SummaryTransition?
-    
-    @State var transition: SummaryTransition?
+    @FocusState private var editedField: SummaryTransition?
+    @State private var transition: SummaryTransition?
+    @Namespace private var namespace
     
     var body: some View {
         Group {
@@ -48,19 +49,10 @@ struct OrderSummaryView: View {
             }
             editedField = nil
         }
-        .safeAreaInset(edge: .bottom) {
-            Button("Complete order") {
-                
-            }
-            .dsButton()
-            .padding()
+        .bottomButtonAction("Complete order") {
+            viewModel.completeOrder()
         }
         .navigationBarHidden(true)
-    }
-    
-    enum AnimationID {
-        static let deliveryAddress = "deliveryAddress"
-        static let paymentWay = "paymentWay"
     }
     
     @ViewBuilder
@@ -69,7 +61,7 @@ struct OrderSummaryView: View {
             .padding(.vertical)
         DSCustomSection {
             DSTitledContent("Delivery address") {
-                Text(viewModel.address)
+                Text(viewModel.deliveryAddress)
             }
         }
         .matchedGeometryEffect(id: AnimationID.deliveryAddress, in: namespace)
@@ -96,7 +88,7 @@ struct OrderSummaryView: View {
     
     var deliveryAddress: some View {
         DSCustomSection {
-            DeliveryAddressIsland(text: $viewModel.address)
+            DeliveryAddressIsland(text: $viewModel.deliveryAddress)
                 .focused($editedField, equals: .deliveryAddress)
         }
         .matchedGeometryEffect(id: AnimationID.deliveryAddress, in: namespace)
@@ -127,13 +119,21 @@ struct OrderSummaryView: View {
 
 #Preview {
     NavigationStack {
-        OrderSummaryView()
+        OrderSummaryView(viewModel: MockViewModel())
     }
     .navigationBarHidden(true)
 }
 
-extension ShapeStyle where Self == Color {
-    
-    static var lightGray: Color { Color(uiColor: .systemGray6) }
-}
+private final class MockViewModel: OrderSummaryViewModel {
+    @Published var installmentPeriod: String? = ""
 
+    @Published var deliveryAddress = ""
+    
+    @Published var paymentWay = ""
+    
+    @Published var options = ["Cash", "Card", "Installment"]
+    
+    func completeOrder() {
+        
+    }
+}

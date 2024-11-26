@@ -18,4 +18,6 @@ protocol PaymentOptionViewModel: ObservableObject {
     
     var selectedOption: String? { get set }
     var selectedInstallment: String? { get set }
+    
+    func didTapBottomButton()
 }

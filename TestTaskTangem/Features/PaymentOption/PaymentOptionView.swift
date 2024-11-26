@@ -39,14 +39,8 @@ struct PaymentOptionView<ViewModel: PaymentOptionViewModel>: View {
             }
         }
         .pickerStyle(.inline)
-        .safeAreaInset(edge: .bottom) {
-            NavigationLink {
-                OrderSummaryView()
-            } label: {
-                Text("Continue")
-                    .dsButton()
-                    .padding(.horizontal)
-            }
+        .bottomButtonAction("Continue") {
+            viewModel.didTapBottomButton()
         }
         .navigationBarHidden(true)
     }
@@ -54,6 +48,18 @@ struct PaymentOptionView<ViewModel: PaymentOptionViewModel>: View {
 
 #Preview {
     NavigationStack {
-        PaymentOptionView(viewModel: PaymentOptionViewModelImpl())
+        PaymentOptionView(viewModel: MockViewModel())
     }
+}
+
+private final class MockViewModel: PaymentOptionViewModel {
+    var options: [String] = ["Cash", "Card", "Installments"]
+    
+    var installments: InstallmentAvailability = .unavailable
+    
+    var selectedOption: String?
+    
+    var selectedInstallment: String?
+    
+    func didTapBottomButton() {}
 }

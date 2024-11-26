@@ -17,24 +17,14 @@ struct DeliveryAddressView<ViewModel: DeliveryAddressViewModel>: View {
             addressSection
                 .padding(.top)
         }
+        .background(.lightGray)
         .onTapGesture {
             isFocused = false
         }
-        .background(.lightGray)
-        .safeAreaInset(edge: .bottom) {
-            bottomButton
-                .padding(.horizontal)
+        .bottomButtonAction("Continue") {
+            viewModel.didTapContinue()
         }
         .navigationBarHidden(true)
-    }
-    
-    private var bottomButton: some View {
-        Button {
-            viewModel.tap()
-        } label: {
-            Text("Continue")
-                .dsButton()
-        }
     }
     
     private var addressSection: some View {

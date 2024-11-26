@@ -10,5 +10,5 @@ import Combine
 protocol DeliveryAddressViewModel: ObservableObject {
     var address: String { get set }
     
-    func tap()
+    func didTapContinue()
 }
