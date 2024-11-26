@@ -19,8 +19,7 @@ struct PaymentOptionView<ViewModel: PaymentOptionViewModel>: View {
                         Text($0).tag(Optional($0))
                     }
                 } label: {
-                    Text("Payment Way")
-                        .bold()
+                    DSTitle("Payment Way")
                         .listRowSeparator(.hidden)
                 }
             }
@@ -31,8 +30,7 @@ struct PaymentOptionView<ViewModel: PaymentOptionViewModel>: View {
                             Text($0).tag(Optional($0))
                         }
                     } label: {
-                        Text("Installment Period")
-                            .bold()
+                        DSTitle("Installment Period")
                             .listRowSeparator(.hidden)
                     }
                 }

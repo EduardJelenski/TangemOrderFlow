@@ -5,12 +5,16 @@
 //  Created by eelenskiy on 26.11.2024.
 //
 
-final class PaymentMethodRepositoryImpl: PaymentMethodUseCase {
-    func fetchPaymentMethods() async throws -> [PaymentMethod] {
+final class PaymentMethodUseCaseImpl: PaymentMethodUseCase {
+    func paymentMethods() -> [String] {
         [
-            .oneTime(name: "Cash"),
-            .oneTime(name: "Card"),
-            .oneTime(name: "Installment")
+            String(localized: "Cash"),
+            String(localized: "Card"),
+            String(localized: "Installment")
         ]
+    }
+    
+    func installmentPeriods() -> [String] {
+        [3, 6, 9].map { String(localized: "\($0) months") }
     }
 }

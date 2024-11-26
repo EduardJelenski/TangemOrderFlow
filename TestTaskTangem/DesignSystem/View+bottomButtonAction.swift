@@ -9,14 +9,14 @@ import SwiftUI
 
 extension View {
     
-    func bottomButtonAction(_ title: String, action: @escaping () -> ()) -> some View {
+    func bottomButtonAction(_ title: LocalizedStringKey, action: @escaping () -> ()) -> some View {
         modifier(BottomButtonActionModifier(title: title, action: action))
     }
 }
 
-struct BottomButtonActionModifier: ViewModifier {
+private struct BottomButtonActionModifier: ViewModifier {
     
-    let title: String
+    let title: LocalizedStringKey
     let action: () -> ()
     
     func body(content: Content) -> some View {

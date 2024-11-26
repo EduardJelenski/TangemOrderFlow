@@ -26,21 +26,18 @@ struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
     @Namespace private var namespace
     
     var body: some View {
-        Group {
-            switch transition {
-            case nil:
-                ScrollView {
+        ScrollView {
+            Group {
+                switch transition {
+                case nil:
                     mainView
-                }
-                .padding(.horizontal)
-            case .deliveryAddress:
-                ScrollView {
+                case .deliveryAddress:
                     deliveryAddress
+                case .paymentWay:
+                    paymentWay
                 }
-                .padding(.horizontal)
-            case .paymentWay:
-                paymentWay
             }
+            .padding(.horizontal)
         }
         .background(.lightGray)
         .onTapGesture {
@@ -60,7 +57,7 @@ struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
         title
             .padding(.vertical)
         DSCustomSection {
-            DSTitledContent("Delivery address") {
+            DSTitledContent("Delivery Address") {
                 Text(viewModel.deliveryAddress)
             }
         }
@@ -75,6 +72,9 @@ struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
         DSCustomSection {
             DSTitledContent("Payment Way") {
                 Text(viewModel.paymentWay)
+            }
+            if let installmentPeriod = viewModel.installmentPeriod {
+                DSCaption(title: .init(installmentPeriod))
             }
         }
         .matchedGeometryEffect(id: AnimationID.paymentWay, in: namespace)
@@ -97,16 +97,25 @@ struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
     var paymentWay: some View {
         VStack {
             Picker(selection: $viewModel.paymentWay) {
-                ForEach(viewModel.options, id: \.self) {
+                ForEach(viewModel.paymentMethods, id: \.self) {
                     Text($0).tag($0)
                 }
             } label: {
-                Text("Payment Way")
-                    .bold()
+                DSTitle("Payment Way")
             }
-            .pickerStyle(.wheel)
-            Spacer()
+            if viewModel.areInstallmentPeriodsAvailable {
+                Picker(selection: $viewModel.installmentPeriod) {
+                    ForEach(viewModel.installmentPeriods, id: \.self) {
+                        Text($0).tag(Optional($0))
+                    }
+                } label: {
+                    DSTitle("Payment Way")
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
         }
+        .animation(.bouncy, value: viewModel.areInstallmentPeriodsAvailable)
+        .pickerStyle(.segmented)
         .matchedGeometryEffect(id: AnimationID.paymentWay, in: namespace)
     }
     
@@ -125,13 +134,17 @@ struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
 }
 
 private final class MockViewModel: OrderSummaryViewModel {
+    var areInstallmentPeriodsAvailable: Bool = false
+
+    var installmentPeriods: [String] = []
+
     @Published var installmentPeriod: String? = ""
 
     @Published var deliveryAddress = ""
     
     @Published var paymentWay = ""
     
-    @Published var options = ["Cash", "Card", "Installment"]
+    @Published var paymentMethods = ["Cash", "Card", "Installment"]
     
     func completeOrder() {
         

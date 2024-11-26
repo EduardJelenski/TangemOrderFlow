@@ -12,7 +12,7 @@ struct DeliveryAddressIsland: View {
     @Binding var text: String
     
     var body: some View {
-        DSTitledContent("Delivery address") {
+        DSTitledContent("Delivery Address") {
             TextField(
                 "Delivery Address",
                 text: $text,

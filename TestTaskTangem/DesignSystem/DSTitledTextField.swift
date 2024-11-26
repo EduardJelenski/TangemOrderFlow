@@ -11,10 +11,10 @@ struct DSTitledTextField: View {
     
     @Binding private var text: String
     
-    private let title: String
-    private let prompt: String
+    private let title: LocalizedStringKey
+    private let prompt: LocalizedStringKey
     
-    init(_ title: String, text: Binding<String>, prompt: String) {
+    init(_ title: LocalizedStringKey, text: Binding<String>, prompt: LocalizedStringKey) {
         self.title = title
         _text = text
         self.prompt = prompt

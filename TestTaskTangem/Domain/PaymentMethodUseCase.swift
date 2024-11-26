@@ -6,5 +6,6 @@
 //
 
 protocol PaymentMethodUseCase {
-    func fetchPaymentMethods() async throws -> [PaymentMethod]
+    func paymentMethods() -> [String]
+    func installmentPeriods() -> [String]
 }

@@ -9,10 +9,10 @@ import SwiftUI
 
 struct DSBottomButton: View {
     
-    let title: String
+    let title: LocalizedStringKey
     let action: () -> ()
     
-    init(_ title: String, action: @escaping () -> Void) {
+    init(_ title: LocalizedStringKey, action: @escaping () -> Void) {
         self.title = title
         self.action = action
     }

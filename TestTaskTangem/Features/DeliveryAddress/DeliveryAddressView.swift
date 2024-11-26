@@ -31,7 +31,13 @@ struct DeliveryAddressView<ViewModel: DeliveryAddressViewModel>: View {
         DSCustomSection {
             DeliveryAddressIsland(text: $viewModel.address)
                 .focused($isFocused)
+            if viewModel.isErrored {
+                DSCaption(title: "Address is invalid")
+                    .foregroundStyle(.red)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
         }
+        .animation(.bouncy, value: viewModel.isErrored)
         .padding(.horizontal)
     }
 }
