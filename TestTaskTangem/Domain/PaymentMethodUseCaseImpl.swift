@@ -15,6 +15,6 @@ final class PaymentMethodUseCaseImpl: PaymentMethodUseCase {
     }
     
     func installmentPeriods() -> [String] {
-        [3, 6, 9].map { String(localized: "\($0) months") }
+        [1, 3, 6].map { String(localized: "\($0) months") }
     }
 }
