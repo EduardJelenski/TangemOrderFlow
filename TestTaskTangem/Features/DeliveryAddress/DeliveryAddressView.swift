@@ -44,6 +44,13 @@ struct DeliveryAddressView<ViewModel: DeliveryAddressViewModel>: View {
 
 #Preview {
     NavigationStack {
-        DeliveryAddressView(viewModel: DeliveryAddressViewModelImpl(coordinator: OrderFlowCoordinator()))
+        DeliveryAddressView(viewModel: MockViewModel())
     }
+}
+
+private final class MockViewModel: DeliveryAddressViewModel {
+    @Published var address: String = ""
+    @Published var isErrored: Bool = false
+
+    func didTapContinue() {}
 }

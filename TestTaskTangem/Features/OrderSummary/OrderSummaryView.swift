@@ -9,12 +9,12 @@ import SwiftUI
 
 private enum SummaryTransition {
     case deliveryAddress
-    case paymentWay
+    case paymentMethod
 }
 
 private enum AnimationID {
     static let deliveryAddress = "deliveryAddress"
-    static let paymentWay = "paymentWay"
+    static let paymentMethod = "paymentMethod"
 }
 
 struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
@@ -33,8 +33,8 @@ struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
                     mainView
                 case .deliveryAddress:
                     deliveryAddress
-                case .paymentWay:
-                    paymentWay
+                case .paymentMethod:
+                    paymentMethod
                 }
             }
             .padding(.horizontal)
@@ -70,19 +70,19 @@ struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
         }
         
         DSCustomSection {
-            DSTitledContent("Payment Way") {
-                Text(viewModel.paymentWay)
+            DSTitledContent("Payment Method") {
+                Text(viewModel.selectedMethod)
             }
-            if let installmentPeriod = viewModel.installmentPeriod {
+            if let installmentPeriod = viewModel.selectedPeriod {
                 DSCaption(title: installmentPeriod)
             }
         }
-        .matchedGeometryEffect(id: AnimationID.paymentWay, in: namespace)
+        .matchedGeometryEffect(id: AnimationID.paymentMethod, in: namespace)
         .onTapGesture {
             withAnimation {
-                transition = .paymentWay
+                transition = .paymentMethod
             }
-            editedField = .paymentWay
+            editedField = .paymentMethod
         }
     }
     
@@ -94,29 +94,25 @@ struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
         .matchedGeometryEffect(id: AnimationID.deliveryAddress, in: namespace)
     }
     
-    var paymentWay: some View {
+    var paymentMethod: some View {
         VStack {
-            Picker(selection: $viewModel.paymentWay) {
+            Picker("Payment Method", selection: $viewModel.selectedMethod) {
                 ForEach(viewModel.paymentMethods, id: \.self) {
                     Text($0).tag($0)
                 }
-            } label: {
-                DSTitle("Payment Way")
             }
             if viewModel.areInstallmentPeriodsAvailable {
-                Picker(selection: $viewModel.installmentPeriod) {
+                Picker("Payment Method", selection: $viewModel.selectedPeriod) {
                     ForEach(viewModel.installmentPeriods, id: \.self) {
                         Text($0).tag(Optional($0))
                     }
-                } label: {
-                    DSTitle("Payment Way")
                 }
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
         .animation(.bouncy, value: viewModel.areInstallmentPeriodsAvailable)
         .pickerStyle(.segmented)
-        .matchedGeometryEffect(id: AnimationID.paymentWay, in: namespace)
+        .matchedGeometryEffect(id: AnimationID.paymentMethod, in: namespace)
     }
     
     var title: some View {
@@ -130,23 +126,17 @@ struct OrderSummaryView<ViewModel: OrderSummaryViewModel>: View {
     NavigationStack {
         OrderSummaryView(viewModel: MockViewModel())
     }
-    .navigationBarHidden(true)
 }
 
 private final class MockViewModel: OrderSummaryViewModel {
-    var areInstallmentPeriodsAvailable: Bool = false
+    @Published var deliveryAddress = "Zug"
 
+    @Published var areInstallmentPeriodsAvailable: Bool = false
+    @Published var selectedPeriod: String? = nil
     var installmentPeriods: [String] = []
 
-    @Published var installmentPeriod: String? = ""
-
-    @Published var deliveryAddress = ""
-    
-    @Published var paymentWay = ""
-    
+    @Published var selectedMethod = "Cash"
     @Published var paymentMethods = ["Cash", "Card", "Installment"]
     
-    func completeOrder() {
-        
-    }
+    func completeOrder() {}
 }

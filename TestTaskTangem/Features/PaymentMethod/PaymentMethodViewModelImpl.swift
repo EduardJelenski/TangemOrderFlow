@@ -12,11 +12,11 @@ final class PaymentMethodViewModelImpl: PaymentMethodViewModel {
         static let installmentMethod = "Installment"
     }
 
-    let methods: [String]
-    @Published var installmentPeriods: [String]? = nil
-    
     @Published var selectedMethod: String?
+    let methods: [String]
+
     @Published var selectedInstallment: String?
+    @Published private(set) var installmentPeriods: [String]? = nil
     
     private let useCase: PaymentMethodUseCase
     private let coordinator: PaymentMethodCoordinator
