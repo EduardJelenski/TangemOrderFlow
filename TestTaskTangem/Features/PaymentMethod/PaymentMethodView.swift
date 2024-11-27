@@ -19,7 +19,7 @@ struct PaymentMethodView<ViewModel: PaymentMethodViewModel>: View {
                         Text($0).tag(Optional($0))
                     }
                 } label: {
-                    DSTitle("Payment Way")
+                    DSTitle("Payment Method")
                         .listRowSeparator(.hidden)
                 }
             }
@@ -51,13 +51,11 @@ struct PaymentMethodView<ViewModel: PaymentMethodViewModel>: View {
 }
 
 private final class MockViewModel: PaymentMethodViewModel {
-    var methods: [String] = ["Cash", "Card", "Installments"]
+    @Published var selectedMethod: String?
+    let methods: [String] = ["Cash", "Card", "Installments"]
     
-    var installmentPeriods: [String]? = nil
-    
-    var selectedMethod: String?
-    
-    var selectedInstallment: String?
+    @Published var selectedInstallment: String?
+    @Published var installmentPeriods: [String]? = nil
     
     func didTapBottomButton() {}
 }

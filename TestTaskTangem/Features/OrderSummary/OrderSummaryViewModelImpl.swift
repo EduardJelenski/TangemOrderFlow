@@ -8,13 +8,19 @@
 import Combine
 
 final class OrderSummaryViewModelImpl: OrderSummaryViewModel {
+    
+    private enum Constants {
+        static let installment = "Installment"
+    }
 
     @Published var deliveryAddress: String
-    @Published var paymentWay: String
-    @Published var installmentPeriod: String?
-    @Published var areInstallmentPeriodsAvailable: Bool
-    let installmentPeriods: [String]
+    
+    @Published var selectedMethod: String
     let paymentMethods: [String]
+    
+    @Published private(set) var areInstallmentPeriodsAvailable: Bool
+    @Published var selectedPeriod: String?
+    let installmentPeriods: [String]
     
     private let useCase: PaymentMethodUseCase
     private let coordinator: OrderSummaryCoordinator
@@ -33,26 +39,29 @@ final class OrderSummaryViewModelImpl: OrderSummaryViewModel {
         
         switch paymentMethod {
         case .oneTime(let name):
-            paymentWay = name
+            self.selectedMethod = name
             areInstallmentPeriodsAvailable = false
         case .installment(let period):
-            paymentWay = "Installment"
-            installmentPeriod = period
+            self.selectedMethod = Constants.installment
+            selectedPeriod = period
             areInstallmentPeriodsAvailable = true
         }
         
-        subscribeOnPaymentMethod()
+        updateInstallmentPeriodsAvailabilityOnPaymentMethodChange()
+        updateInstallmentPeriodOnPaymentMethodChange()
     }
     
-    private func subscribeOnPaymentMethod() {
-        $paymentWay
-            .map { $0 == "Installment" }
+    private func updateInstallmentPeriodsAvailabilityOnPaymentMethodChange() {
+        $selectedMethod
+            .map { $0 == Constants.installment }
             .assign(to: &$areInstallmentPeriodsAvailable)
-        
-        $paymentWay
-            .filter { $0 != "Installment" }
+    }
+    
+    private func updateInstallmentPeriodOnPaymentMethodChange() {
+        $selectedMethod
+            .filter { $0 != Constants.installment }
             .map { _ in nil }
-            .assign(to: &$installmentPeriod)
+            .assign(to: &$selectedPeriod)
     }
     
     func completeOrder() {
