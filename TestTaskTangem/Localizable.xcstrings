@@ -1,0 +1,46 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld months" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld month"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "new",
+                  "value" : "%lld months"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Card" : {
+
+    },
+    "Cash" : {
+
+    },
+    "Delivery Address" : {
+
+    },
+    "Installment" : {
+
+    },
+    "Order summary" : {
+
+    },
+    "Switzerland, Zug, 12 Bitcoin St., Tangem LLC." : {
+
+    }
+  },
+  "version" : "1.0"
+}
